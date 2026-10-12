@@ -1,8 +1,8 @@
 {
-  "name": "KHAN-MD",
+  "name": "RANA-X-MD",
   "description": "Javascript WhatsApp bot made by Jᴀᴡᴀᴅ TᴇᴄʜX",
-  "logo": "https://files.catbox.moe/neni8p.jpg",
-  "keywords": ["KHAN-MD"],
+  "logo": "https://files.catbox.moe/8gwrio.jpg",
+  "keywords": ["RANA-X-MD"],
   "success_url": "/",
   "stack": "container",
   "env": {
@@ -17,9 +17,9 @@
       "value": "."
     },
     "BOT_NAME": {
-      "description": "Your bot name (Default: KHAN-MD)",
+      "description": "Your bot name (Default: RANA-X-MD)",
       "required": false,
-      "value": "KHAN-MD"
+      "value": "RANA-X-MD"
     },
     "MODE": {
       "description": "Bot mode: public/private/inbox/groups (Default: private)",
@@ -27,14 +27,14 @@
       "value": "public"
     },
     "OWNER_NUMBER": {
-      "description": "Owner WhatsApp number without + (Default: 923427582273)",
+      "description": "Owner WhatsApp number without + (Default: 8801636487523)",
       "required": false,
-      "value": "923427582273"
+      "value": "8801636487523"
     },
     "OWNER_NAME": {
-      "description": "Owner name (Default: Jᴀᴡᴀᴅ TᴇᴄʜX)",
+      "description": "Owner name (Default: 🇷┳◇┳𝗝♥︎‿♥︎𝗥𝗔𝗡𝗔-MD BOT)",
       "required": false,
-      "value": "Jᴀᴡᴀᴅ TᴇᴄʜX"
+      "value": "🇷┳◇┳𝗝♥︎‿♥︎𝗥𝗔𝗡𝗔-MD BOT"
     },
     "AUTO_REPLY": {
       "description": "Auto reply to messages: true/false (Default: false)",
@@ -149,7 +149,7 @@
     "BOT_MEDIA_URL": {
       "description": "Bot media URL",
       "required": false,
-      "value": "https://files.catbox.moe/7zfdcq.jpg"
+      "value": "https://files.catbox.moe/8gwrio.jpg"
     },
     "AUTO_DOWNLOADER": {
       "description": "Auto downloader: true/false (Default: false)",
@@ -164,7 +164,7 @@
     "DESCRIPTION": {
       "description": "Bot description",
       "required": false,
-      "value": "*© Powered by Jᴀᴡᴀᴅ TᴇᴄʜX*"
+      "value": "*© Powered RanKHA-MDppy*"
     }
   },
   "buildpacks": [
