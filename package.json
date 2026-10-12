@@ -5,34 +5,27 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node index.js",
-    "stop": "pm2 stop RANA-X-MD",
-    "restart": "pm2 restart RANA-X-MD"
+    "start": "node index.js"
   },
   "dependencies": {
     "@whiskeysockets/baileys": "7.0.0-rc.9",
     "@ffmpeg-installer/ffmpeg": "^1.1.0",
     "@vitalets/google-translate-api": "^9.2.1",
     "pino": "^9.7.0",
-    "pm2": "^6.0.8",
-    "util": "^0.12.5",
     "express": "^5.1.0",
-    "buffer": "^6.0.3",
-    "moment-timezone": "^0.6.0",
     "axios": "^1.7.9",
-    "google-tts-api": "^2.0.2",
-    "file_size_url": "1.0.6",
     "fs-extra": "^11.1.0",
     "file-type": "^16.5.4",
-    "human-readable": "^0.2.1",
     "jimp": "^0.22.10",
-    "js-confuser": "^1.3.2",
     "jsdom": "^22.1.0",
     "link-preview-js": "^3.0.6",
     "node-fetch": "^2.6.1",
     "node-cron": "^3.0.3",
     "wa-sticker-formatter": "^4.3.2",
-    "youtube-yts": "^1.0.4",
-    "yt-search": "^2.12.1"
+    "yt-search": "^2.12.1",
+    "moment-timezone": "^0.6.0",
+    "google-tts-api": "^2.0.2",
+    "buffer": "^6.0.3",
+    "util": "^0.12.5"
   }
 }
