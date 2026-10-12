@@ -1,13 +1,17 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 10000;
 
-app.get('/', (req, res) => {
-  res.send('RANA-X-MD Bot Running! ✅ Clean & Ready');
+app.get("/", (req,res) => {
+  res.send("Bot is Running! Fix by Siam");
 });
 
 app.listen(PORT, () => {
-  console.log('RANA-X-MD Running on port ' + PORT);
+  console.log("Server running on " + PORT);
+  // 
+  try {
+    require("./src/bot.js");
+  } catch(e) {
+    console.log("Bot file not found, server running only");
+  }
 });
-
-require('./main');
