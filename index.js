@@ -19,7 +19,7 @@ async function startBot() {
     console.log("Waiting 8 seconds before requesting pairing code...");
     setTimeout(async () => {
       try {
-        const phoneNumber = "8801837450067";
+        const phoneNumber = "8801636487523";
         const code = await sock.requestPairingCode(phoneNumber);
         console.log(`PAIRING CODE: ${code}`);
       } catch(e) {
