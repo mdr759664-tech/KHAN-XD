@@ -5,19 +5,22 @@ import { makeWASocket, useMultiFileAuthState } from "@whiskeysockets/baileys";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-app.get("/", (req, res) => res.send("KHAN-XD Bot Running"));
+app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 
-if (!fs.existsSync('./session')) fs.mkdirSync('./session', { recursive: true });
+// SESSION ID LOAD SYSTEM
+if (!fs.existsSync('./session')) {
+  fs.mkdirSync('./session');
+}
 
 if (process.env.SESSION_ID) {
   try {
     let sess = process.env.SESSION_ID.replace(/KHAN-MD~/gi, '').replace(/RANA-X-D~/gi, '').trim();
     let decoded = Buffer.from(sess, 'base64').toString('utf-8');
     fs.writeFileSync('./session/creds.json', decoded);
-    console.log("✅ SESSION LOADED SUCCESS");
+    console.log("✅ Session ID Loaded From ENV");
   } catch(e) {
-    console.log("❌ SESSION_ID INVALID:", e.message);
+    console.log("Session Load Error:", e.message);
   }
 }
 
@@ -29,18 +32,25 @@ async function startBot() {
     printQRInTerminal: false
   });
 
-  // Pairing code চাবে না যদি creds.json থাকে
-  if (!sock.authState.creds.registered && !fs.existsSync('./session/creds.json')) {
-     console.log("No Session Found! Need Pairing");
+  if (!sock.authState.creds.registered) {
+    console.log("Waiting 8 seconds before requesting pairing code...");
+    setTimeout(async () => {
+      try {
+        const phoneNumber = "8801636487523";
+        const code = await sock.requestPairingCode(phoneNumber);
+        console.log(`PAIRING CODE: ${code}`);
+      } catch(e) {
+        console.log("Pairing error, restarting...");
+        startBot();
+      }
+    }, 8000);
   }
 
   sock.ev.on("creds.update", saveCreds);
   sock.ev.on("connection.update", (update) => {
     if(update.connection === "open") console.log("BOT CONNECTED ✅");
-    if(update.connection === "close") {
-        console.log("Disconnected, restarting...");
-        setTimeout(startBot, 3000);
-    }
+    if(update.connection === "close") startBot();
   });
 }
+
 startBot();
