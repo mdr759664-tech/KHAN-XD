@@ -4,7 +4,7 @@ import { makeWASocket, useMultiFileAuthState } from "@whiskeysockets/baileys";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-app.get("/", (req, res) => res.send("KHAN-XD Bot Running"));
+app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
 app.listen(PORT, () => console.log("Server running on " + PORT));
 
 async function startBot() {
@@ -19,7 +19,7 @@ async function startBot() {
     console.log("Waiting 8 seconds before requesting pairing code...");
     setTimeout(async () => {
       try {
-        const phoneNumber = "8801636487523";
+        const phoneNumber = "8801837450067";
         const code = await sock.requestPairingCode(phoneNumber);
         console.log(`PAIRING CODE: ${code}`);
       } catch(e) {
