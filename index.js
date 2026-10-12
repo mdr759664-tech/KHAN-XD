@@ -1,3 +1,6 @@
+import fs from "fs";
+if(fs.existsSync('./auth_info_baileys')) fs.rmSync('./auth_info_baileys', {recursive:true, force:true});
+if(fs.existsSync('./session')) fs.rmSync('./session', {recursive:true, force:true});
 import express from "express";
 import makeWASocket, { useMultiFileAuthState, Browsers } from "@whiskeysockets/baileys";
 import pino from "pino";
