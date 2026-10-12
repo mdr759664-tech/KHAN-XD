@@ -8,10 +8,7 @@ const PORT = process.env.PORT || 10000;
 app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 
-// SESSION ID LOAD SYSTEM
-if (!fs.existsSync('./session')) {
-  fs.mkdirSync('./session');
-}
+if (!fs.existsSync('./session')) fs.mkdirSync('./session', { recursive: true });
 
 if (process.env.SESSION_ID) {
   try {
@@ -20,37 +17,24 @@ if (process.env.SESSION_ID) {
     fs.writeFileSync('./session/creds.json', decoded);
     console.log("✅ Session ID Loaded From ENV");
   } catch(e) {
-    console.log("Session Load Error:", e.message);
+    console.log("❌ SESSION INVALID");
   }
+} else {
+  console.log("❌ NO SESSION_ID IN ENV!");
 }
 
 async function startBot() {
-  const { state, saveCreds } = await useMultiFileAuthState('./session');
-  const sock = makeWASocket({
-    logger: pino({ level: "silent" }),
-    auth: state,
-    printQRInTerminal: false
-  });
-
-  if (!sock.authState.creds.registered) {
-    console.log("Waiting 8 seconds before requesting pairing code...");
-    setTimeout(async () => {
-      try {
-        const phoneNumber = "8801636487523";
-        const code = await sock.requestPairingCode(phoneNumber);
-        console.log(`PAIRING CODE: ${code}`);
-      } catch(e) {
-        console.log("Pairing error, restarting...");
-        startBot();
-      }
-    }, 8000);
+  if (!fs.existsSync('./session/creds.json')) {
+    console.log("❌ creds.json not found! Check SESSION_ID");
+    return;
   }
+  const { state, saveCreds } = await useMultiFileAuthState('./session');
+  const sock = makeWASocket({ logger: pino({ level: "silent" }), auth: state, printQRInTerminal: false });
 
   sock.ev.on("creds.update", saveCreds);
-  sock.ev.on("connection.update", (update) => {
-    if(update.connection === "open") console.log("BOT CONNECTED ✅");
-    if(update.connection === "close") startBot();
+  sock.ev.on("connection.update", (u) => {
+    if(u.connection === "open") console.log("BOT CONNECTED ✅");
+    if(u.connection === "close") setTimeout(startBot, 3000);
   });
 }
-
 startBot();
