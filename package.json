@@ -25,7 +25,7 @@
     "fs-extra": "^11.1.0",
     "file-type": "^16.5.4",
     "human-readable": "^0.2.1",
-    "jimp": "^0.22.13",
+    "jimp": "^0.22.10",
     "js-confuser": "^1.3.2",
     "jsdom": "^22.1.0",
     "link-preview-js": "^3.0.6",
