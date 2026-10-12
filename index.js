@@ -6,7 +6,20 @@ const app = express();
 const PORT = process.env.PORT || 10000;
 app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
 app.listen(PORT, () => console.log("Server running on " + PORT));
+if (!fs.existsSync('./session')) {
+  fs.mkdirSync('./session');
+}
 
+if (process.env.SESSION_ID) {
+  try {
+    let sess = process.env.SESSION_ID.replace(/KHAN-MD~/gi, '').replace(/RANA-X-D~/gi, '').trim();
+    let decoded = Buffer.from(sess, 'base64').toString('utf-8');
+    fs.writeFileSync('./session/creds.json', decoded);
+    console.log("✅ Session ID Loaded From ENV");
+  } catch(e) {
+    console.log("Session Load Error:", e.message);
+  }
+}
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState('./auth_info_baileys');
   const sock = makeWASocket({
