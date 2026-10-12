@@ -1,11 +1,14 @@
 import express from "express";
+import fs from "fs";
 import pino from "pino";
 import { makeWASocket, useMultiFileAuthState } from "@whiskeysockets/baileys";
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
-app.listen(PORT, () => console.log("Server running on " + PORT));
+app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+
+// ✅ SESSION ID LOAD SYSTEM
 if (!fs.existsSync('./session')) {
   fs.mkdirSync('./session');
 }
@@ -20,8 +23,9 @@ if (process.env.SESSION_ID) {
     console.log("Session Load Error:", e.message);
   }
 }
+
 async function startBot() {
-  const { state, saveCreds } = await useMultiFileAuthState('./auth_info_baileys');
+  const { state, saveCreds } = await useMultiFileAuthState('./session');
   const sock = makeWASocket({
     logger: pino({ level: "silent" }),
     auth: state,
@@ -36,16 +40,17 @@ async function startBot() {
         const code = await sock.requestPairingCode(phoneNumber);
         console.log(`PAIRING CODE: ${code}`);
       } catch(e) {
-        console.log("Pairing error, restarting...", e.message);
+        console.log("Pairing error, restarting...");
         startBot();
       }
-    }, 8000); // 8 second delay
+    }, 8000);
   }
 
   sock.ev.on("creds.update", saveCreds);
   sock.ev.on("connection.update", (update) => {
-    if(update.connection === "open") console.log("BOT CONNECTED!");
+    if(update.connection === "open") console.log("BOT CONNECTED ✅");
     if(update.connection === "close") startBot();
   });
 }
+
 startBot();
