@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 10000;
 app.get("/", (req, res) => res.send("RANA-X-D Bot Running"));
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
 
-// ✅ SESSION ID LOAD SYSTEM
+// SESSION ID LOAD SYSTEM
 if (!fs.existsSync('./session')) {
   fs.mkdirSync('./session');
 }
