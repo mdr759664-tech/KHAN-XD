@@ -1,41 +1,41 @@
-import fs from "fs";
-import { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, delay } from "@whiskeysockets/baileys";
-import pino from "pino";
-import express from "express";
+const { Telegraf } = require('telegraf');
+const { default: makeWASocket, useMultiFileAuthState, delay } = require('@whiskeysockets/baileys');
+const fs = require('fs');
 
-if (fs.existsSync("./session")) fs.rmSync("./session", { recursive: true, force: true });
+const BOT_TOKEN = process.env.BOT_TOKEN;
+const bot = new Telegraf(BOT_TOKEN);
 
-const app = express();
-app.get("/", (req,res)=>res.send("Bot Running"));
-app.listen(process.env.PORT || 10000);
+bot.start((ctx) => ctx.reply(
+`Welcome to RANA-X-MD Pair Bot!
 
-const PAIR_NUMBER = "8801636487523";
+Send your WhatsApp Number with country code
+Example: 8801636487523
 
-async function start() {
-  const { version } = await fetchLatestBaileysVersion();
-  console.log("Using WA v" + version.join("."));
-  const { state, saveCreds } = await useMultiFileAuthState('./session');
-  const sock = makeWASocket({ 
-    version, 
-    logger: pino({level:"silent"}), 
-    auth: state, 
-    printQRInTerminal: false,
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
-    syncFullHistory: false
-  });
-  
-  sock.ev.on("creds.update", saveCreds);
-  sock.ev.on("connection.update", async (u)=>{
-    const { connection } = u;
-    if(connection==="open") {
-      console.log("✅ CONNECTED! Bot online - Code no longer needed");
-    }
-  });
+Channel: https://whatsapp.com/channel/0029VbDjPSq9mrGZ25AYA021`
+));
 
-  if (!sock.authState.creds.registered) {
-    await delay(10000);
-    const code = await sock.requestPairingCode(PAIR_NUMBER);
-    console.log(`\nCODE: ${code}\nEnter fast! Don't wait!\n`);
+bot.on('text', async (ctx) => {
+  let num = ctx.message.text.replace(/[^0-9]/g, '');
+  if(num.length < 11) return ctx.reply('Invalid Number! Send like: 8801636487523');
+
+  await ctx.reply(`Generating Pair Code for ${num}... Please wait 20 sec`);
+
+  try {
+    if(fs.existsSync('./temp')) fs.rmSync('./temp', {recursive:true, force:true});
+    const { state, saveCreds } = await useMultiFileAuthState('./temp');
+    const sock = makeWASocket({ 
+        auth: state, 
+        printQRInTerminal: false,
+        browser: ["RANA-X-MD", "Chrome", "121.0"]
+    });
+    sock.ev.on('creds.update', saveCreds);
+    await delay(3000);
+    let code = await sock.requestPairingCode(num);
+    await ctx.reply(`Your Pair Code: ${code}\n\nGo to WhatsApp > Linked Devices > Link with phone number > Enter this code\nExpire in 60 sec`);
+  } catch(e) {
+    ctx.reply('Error! Try again after 2 min: ' + e.message);
   }
-}
-start();
+});
+
+bot.launch();
+console.log('Bot Live');
