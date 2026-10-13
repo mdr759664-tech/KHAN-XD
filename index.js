@@ -9,7 +9,7 @@ const app = express();
 app.get("/", (req,res)=>res.send("Bot Running"));
 app.listen(process.env.PORT || 10000);
 
-const PAIR_NUMBER = "8801837450067";
+const PAIR_NUMBER = "8801636487523";
 
 async function start() {
   const { version } = await fetchLatestBaileysVersion();
