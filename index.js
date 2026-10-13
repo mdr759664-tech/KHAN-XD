@@ -1,63 +1,43 @@
-import express from "express";
-import fs from "fs";
+import { makeWASocket, useMultiFileAuthState, fetchLatestBaileysVersion, delay } from "@whiskeysockets/baileys";
 import pino from "pino";
-import { makeWASocket, useMultiFileAuthState, delay, fetchLatestBaileysVersion } from "@whiskeysockets/baileys";
-
+import express from "express";
 const app = express();
-const PORT = process.env.PORT || 10000;
-app.get("/", (req, res) => res.send("RANA-X-XD Pair Running"));
-app.listen(PORT, () => console.log(`Server on ${PORT}`));
+app.get("/", (req,res)=>res.send("Bot Running"));
+app.listen(process.env.PORT || 10000);
 
-async function startBot() {
-  if (fs.existsSync('./session/creds.json')) {
-    console.log("Deleting old session to get fresh pair code...");
-    fs.rmSync('./session', { recursive: true, force: true });
-  }
-  if (!fs.existsSync('./session')) fs.mkdirSync('./session', { recursive: true });
+const PAIR_NUMBER = "8801636487523";
 
+async function start() {
   const { version } = await fetchLatestBaileysVersion();
-  console.log(`Using WA Version: ${version}`);
-
   const { state, saveCreds } = await useMultiFileAuthState('./session');
-
-  const sock = makeWASocket({
-    version,
-    logger: pino({ level: "silent" }),
-    auth: state,
-    browser: ["Ubuntu", "Chrome", "20.0.04"],
-    printQRInTerminal: false,
-    shouldSyncHistoryMessage: () => false
+  const sock = makeWASocket({ 
+    version, 
+    logger: pino({level:"silent"}), 
+    auth: state, 
+    printQRInTerminal:false, 
+    browser:["Ubuntu","Chrome","20.0.04"] 
   });
-
   sock.ev.on("creds.update", saveCreds);
 
-  if (!state.creds.registered) {
-    await delay(4000);
-    const phoneNumber = "8801636487523";
-    try {
-      const code = await sock.requestPairingCode(phoneNumber);
-      console.log(`
-================ PAIR CODE ================
-NUMBER: ${phoneNumber}
-CODE: ${code}
-
-WhatsApp > Linked Devices > Link with phone number > Enter CODE
-`);
-    } catch (e) {
-      console.log("Pair Error:", e.message);
+  if (!sock.authState.creds.registered) {
+    console.log("Waiting 5 sec...");
+    await delay(5000);
+    while (!sock.authState.creds.registered) {
+      try {
+        const code = await sock.requestPairingCode(PAIR_NUMBER);
+        console.log("NEW CODE: " + code);
+        console.log("Time: " + new Date().toLocaleTimeString());
+        await delay(60000);
+      } catch (e) {
+        console.log("Error: " + e.message);
+        await delay(10000);
+      }
     }
   }
 
-  sock.ev.on("connection.update", async ({ connection, lastDisconnect }) => {
-    if (connection === "open") {
-      console.log("✅ BOT CONNECTED SUCCESSFULLY");
-    }
-    if (connection === "close") {
-      console.log("Connection closed, restarting in 3 sec...");
-      await delay(3000);
-      startBot();
-    }
+  sock.ev.on("connection.update", ({connection})=>{
+    if(connection==="open") console.log("CONNECTED SUCCESSFULLY!");
+    if(connection==="close") start();
   });
 }
-
-startBot();
+start();
